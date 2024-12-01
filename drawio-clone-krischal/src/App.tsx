@@ -7,18 +7,23 @@ import { DiagramProvider } from "./context/DiagramContext";
 
 function App() {
   const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedEdge, setSelectedEdge] = useState(null);
   return (
     <DiagramProvider>
       <div className="flex h-screen bg-white">
         <Sidebar
           selectedNode={selectedNode}
           setSelectedNode={setSelectedNode}
+          selectedEdge={selectedEdge}
+          setSelectedEdge={setSelectedEdge}
         />
         <div className="flex-1 flex flex-col ">
           <Toolbar />
           <Diagram
             selectedNode={selectedNode}
             setSelectedNode={setSelectedNode}
+            selectedEdge={selectedEdge}
+            setSelectedEdge={setSelectedEdge}
           />
         </div>
       </div>

@@ -1,10 +1,26 @@
 import { useState } from "react";
 import { useDiagram } from "../context/DiagramContext";
 
-export default function Sidebar({ selectedNode, setSelectedNode }) {
+export default function Sidebar({
+  selectedNode,
+  setSelectedNode,
+  selectedEdge,
+  setSelectedEdge,
+}) {
   const { nodes, setNodes } = useDiagram();
+  const { edges, setEdges } = useDiagram();
   const [newColumn, setNewColumn] = useState({ name: "", type: "VARCHAR" });
 
+  const updateEdgeRelationship = (relationship) => {
+    if (selectedEdge) {
+      setEdges((prevEdges) =>
+        prevEdges.map((edge) =>
+          edge.id === selectedEdge.id ? { ...edge, label: relationship } : edge
+        )
+      );
+      setSelectedEdge((prev) => ({ ...prev, label: relationship }));
+    }
+  };
   const addTable = () => {
     const newNode = {
       id: `table-${Date.now()}`,

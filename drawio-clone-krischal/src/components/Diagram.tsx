@@ -12,7 +12,12 @@ import { useDiagram } from "../context/DiagramContext";
 import TableNode from "./TableNode";
 import RelationshipEdge from "./RelationShipEdge";
 
-export default function Diagram({ selectedNode, setSelectedNode }) {
+export default function Diagram({
+  selectedNode,
+  setSelectedNode,
+  selectedEdge,
+  setSelectedEdge,
+}) {
   const { nodes, setNodes, edges, setEdges } = useDiagram();
 
   const nodeTypes = {
@@ -20,6 +25,9 @@ export default function Diagram({ selectedNode, setSelectedNode }) {
   };
   const edgeTypes = {
     relationshipEdge: RelationshipEdge,
+  };
+  const onEdgeClick = (_, edge) => {
+    setSelectedEdge(edge);
   };
   // Handle adding connections (edges)
   const onConnect = useCallback(
@@ -35,10 +43,11 @@ export default function Diagram({ selectedNode, setSelectedNode }) {
   );
 
   return (
-    <div className="flex-grow h-screen">
+    <div className="flex-grow h-screen" style={{ height: 800 }}>
       <ReactFlow
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
+        onEdgeClick={onEdgeClick}
         nodes={nodes}
         edges={edges}
         onNodesChange={(changes) =>
