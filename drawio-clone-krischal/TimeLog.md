@@ -1,0 +1,4 @@
+| Date       | Time Spent (hrs) | Task Description                                                                                                                                                                          |
+| ---------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2024-11-30 | 3                | Read the document of React Flow and watch the video of React Flow on YouTube. Fork the repo and set up the project on Next.js with tailwindcss and made the branch krischal_pote_frontend |
+| 2024-12-1  | -                | Migrated to Vite React issue faced on new Next.js 15 version                                                                                                                              |
