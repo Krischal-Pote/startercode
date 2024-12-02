@@ -1,21 +1,38 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { Node, Edge } from "@xyflow/react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useCallback,
+} from "react";
+import {
+  Node,
+  Edge,
+  useNodesState,
+  useEdgesState,
+  OnNodesChange,
+  OnEdgesChange,
+} from "@xyflow/react";
 
 interface DiagramContextType {
   nodes: Node[];
-  setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+  onNodesChange: any;
+  setNodes: any;
   edges: Edge[];
-  setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
+  setEdges: any;
+  onEdgesChange: any;
 }
 
 const DiagramContext = createContext<DiagramContextType | undefined>(undefined);
 
 export const DiagramProvider = ({ children }: { children: ReactNode }) => {
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   return (
-    <DiagramContext.Provider value={{ nodes, setNodes, edges, setEdges }}>
+    <DiagramContext.Provider
+      value={{ nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange }}
+    >
       {children}
     </DiagramContext.Provider>
   );

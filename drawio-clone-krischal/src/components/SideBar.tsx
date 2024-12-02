@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useDiagram } from "../context/DiagramContext";
+import { Link } from "react-router-dom";
+import CustomNodes from "./nodes";
+import { NodeType } from "../../utils/home";
 
 export default function Sidebar({
   selectedNode,
@@ -7,37 +10,50 @@ export default function Sidebar({
   selectedEdge,
   setSelectedEdge,
 }) {
-  const { nodes, setNodes } = useDiagram();
-  const { edges, setEdges } = useDiagram();
+  const { nodes, setNodes, edges, setEdges } = useDiagram();
   const [newColumn, setNewColumn] = useState({ name: "", type: "VARCHAR" });
+  const [expanded, setExpanded] = useState(1);
 
-  const updateEdgeRelationship = (relationship) => {
-    if (selectedEdge) {
-      setEdges((prevEdges) =>
-        prevEdges.map((edge) =>
-          edge.id === selectedEdge.id ? { ...edge, label: relationship } : edge
-        )
-      );
-      setSelectedEdge((prev) => ({ ...prev, label: relationship }));
-    }
+  const handleChange = (id: number) => {
+    setExpanded(id);
   };
+  const NODES = [
+    NodeType.RECTANGLE,
+    NodeType.CIRCLE,
+    NodeType.ROUNDED_RECTANGLE,
+    NodeType.SQUARE,
+    NodeType.ELLIPSE,
+    NodeType.TEXT,
+  ];
+
+  // const updateEdgeRelationship = (relationship) => {
+  //   if (selectedEdge) {
+  //     setEdges((prevEdges) =>
+  //       prevEdges.map((edge) =>
+  //         edge.id === selectedEdge.id ? { ...edge, label: relationship } : edge
+  //       )
+  //     );
+  //     setSelectedEdge((prev) => ({ ...prev, label: relationship }));
+  //   }
+  // };
   const addTable = () => {
     const newNode = {
       id: `table-${Date.now()}`,
-      type: "tableNode", // Custom type for the node
+      type: "tableNode",
       data: {
         label: `Table ${nodes.length + 1}`,
         columns: [],
       },
       position: { x: Math.random() * 250, y: Math.random() * 250 },
     };
+    console.log("new node", newNode);
 
-    setNodes((prevNodes) => [...prevNodes, newNode]);
+    setNodes((pvNodes: any) => pvNodes.concat(newNode));
   };
 
   const deleteTable = (id: string) => {
-    setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
-    if (selectedNode?.id === id) setSelectedNode(null); // Deselect if deleted
+    // setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
+    // if (selectedNode?.id === id) setSelectedNode(null);
   };
 
   const addColumn = () => {
@@ -61,26 +77,54 @@ export default function Sidebar({
 
   const deleteColumn = (columnName: string) => {
     if (selectedNode) {
-      setNodes((prevNodes) =>
-        prevNodes.map((node) =>
-          node.id === selectedNode.id
-            ? {
-                ...node,
-                data: {
-                  ...node.data,
-                  columns: node.data.columns.filter(
-                    (col) => col.name !== columnName
-                  ),
-                },
-              }
-            : node
-        )
-      );
+      // setNodes((prevNodes) =>
+      //   prevNodes.map((node) =>
+      //     node.id === selectedNode.id
+      //       ? {
+      //           ...node,
+      //           data: {
+      //             ...node.data,
+      //             columns: node.data.columns.filter(
+      //               (col) => col.name !== columnName
+      //             ),
+      //           },
+      //         }
+      //       : node
+      //   )
+      // );
     }
   };
-
+  const onDragStart = (event, nodeType) => {
+    event.dataTransfer.setData("application/reactflow", nodeType);
+    event.dataTransfer.effectAllowed = "move";
+  };
+  const renderShape = (nodeType) => {
+    switch (nodeType) {
+      case NodeType.RECTANGLE:
+        return <div className="w-16 h-10 bg-blue-400"></div>;
+      case NodeType.CIRCLE:
+        return <div className="w-12 h-12 bg-green-400 rounded-full"></div>;
+      case NodeType.ROUNDED_RECTANGLE:
+        return <div className="w-16 h-10 bg-yellow-400 rounded-md"></div>;
+      case NodeType.SQUARE:
+        return <div className="w-12 h-12 bg-red-400"></div>;
+      case NodeType.ELLIPSE:
+        return <div className="w-20 h-12 bg-purple-400 rounded-full"></div>;
+      case NodeType.TEXT:
+        return (
+          <div className="text-gray-700 font-semibold">
+            <span>Text</span>
+          </div>
+        );
+      default:
+        return <div className="w-12 h-12 bg-gray-300"></div>;
+    }
+  };
   return (
     <div className="w-60 bg-gray-200 p-4 shadow-md">
+      <Link to="/landingpage" className="block text-blue-500 mb-4">
+        Go to Landing Page
+      </Link>
       <h3 className="text-lg font-bold mb-4">Diagram Sidebar</h3>
 
       {/* Add Table */}
@@ -169,6 +213,19 @@ export default function Sidebar({
           </li>
         ))}
       </ul>
+      <h4 className="text-md font-semibold mt-4">Shapes</h4>
+      <div className="grid grid-cols-3 gap-2">
+        {NODES.map((nodeType) => (
+          <div
+            key={nodeType}
+            draggable
+            onDragStart={(event) => onDragStart(event, nodeType)}
+            className="p-2 bg-white rounded shadow-sm cursor-move flex justify-center items-center"
+          >
+            {renderShape(nodeType)}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
