@@ -22,7 +22,6 @@ export const Process = () => {
         <div className="flex gap-8 bg-gray-100 p-4 rounded-full">
           {processCategories.map((category) => (
             <button
-              key={category}
               onClick={() => handleClick(category)}
               className={
                 isActive === category
@@ -35,7 +34,7 @@ export const Process = () => {
           ))}
         </div>
       </div>
-      <div className="flex gap-4 flex-row">
+      <div className="flex gap-4 flex-row ">
         {Array(5)
           .fill(0, 0, 5)
           .map((_, index) => (
@@ -55,10 +54,9 @@ export const Process = () => {
                   address. Our advanced system will swiftly retrieve all the
                   relevant details related to your property. This initial step
                   ensures we have the necessary information to proceed
-                  effectively, showing you your estimated tax savings right
-                  away.
+                  effectively, showing you your estimated tax savings right away
                 </p>
-                <ArrowRight className="custom_icon bg-white text-black rounded-full p-4 w-16 h-16 cursor-pointer hover:bg-white/80 hidden sm:block" />
+                <ArrowRight className="custom_icon bg-white text-black rounded-full p-4 w-16 h-16 cursor-pointer hover:bg-white/80 hidden " />
               </div>
             </div>
           ))}
