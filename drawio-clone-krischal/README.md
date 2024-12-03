@@ -36,4 +36,4 @@ npm run dev
 
 ## Screenshots:
 
-![alt text](https://github.com/Krischal-Pote/startercode/screenshot/draw.io-krichal.png)
+![alt text](https://github.com/Krischal-Pote/startercode/blob/krischal_pote_frontend/drawio-clone-krischal/screenshot/draw.io-krichal.png)
