@@ -19,6 +19,41 @@
     0 0
   );
 }
+.custom_process {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("/process.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  padding-bottom: 120px;
+}
+.truncate_text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  text-overflow: ellipsis;
+}
+.custom_process:first-child {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url("/process.jpg");
+  width: 50rem;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding-bottom: 40px;
+}
+.custom_process:first-child > h1 {
+  width: 35rem;
+  overflow: none;
+  white-space: initial;
+}
+.custom_process:first-child > div > .truncate_text {
+  display: block;
+  width: 30rem;
+}
+.custom_process:first-child > div > .custom_icon {
+  display: block;
+}
 
 .nodes {
   border: 0.5px solid black;

@@ -1,5 +1,6 @@
 {
-  "name": "my-project",
+  "name": "drawio-clone-krischal",
+  "author": "Krischal Om Pote",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,9 +13,11 @@
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
+    "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.9",
     "@xyflow/react": "^12.3.5",
     "eventemitter3": "^5.0.1",
+    "lucide-react": "^0.462.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1",

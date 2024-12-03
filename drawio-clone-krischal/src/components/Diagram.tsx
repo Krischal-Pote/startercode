@@ -28,7 +28,6 @@ export default function Diagram({
   const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange } =
     useDiagram();
 
-  // Define all node types
   const nodeTypes = useMemo(
     () => ({
       [NodeType.CIRCLE]: CircleNode,
@@ -46,7 +45,6 @@ export default function Diagram({
     relationshipEdge: RelationshipEdge,
   };
 
-  // Handle adding connections (edges)
   const onConnect = useCallback(
     (connection) => {
       setEdges((eds) =>
@@ -59,15 +57,6 @@ export default function Diagram({
     [setEdges]
   );
 
-  // Handle node deletion
-  const deleteSelectedNode = () => {
-    if (selectedNode) {
-      setNodes((nds) => nds.filter((node) => node.id !== selectedNode.id));
-      setSelectedNode(null); // Clear selection
-    }
-  };
-
-  // Handle drag-and-drop events
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -118,11 +107,6 @@ export default function Diagram({
         <Controls />
         <Background />
       </ReactFlow>
-
-      {/* Delete Button */}
-      <button onClick={deleteSelectedNode} disabled={!selectedNode}>
-        Delete Node
-      </button>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDiagram } from "../context/DiagramContext";
 import { Link } from "react-router-dom";
-import CustomNodes from "./nodes";
 import { NodeType } from "../../utils/home";
 
 export default function Sidebar({
@@ -26,16 +25,16 @@ export default function Sidebar({
     NodeType.TEXT,
   ];
 
-  // const updateEdgeRelationship = (relationship) => {
-  //   if (selectedEdge) {
-  //     setEdges((prevEdges) =>
-  //       prevEdges.map((edge) =>
-  //         edge.id === selectedEdge.id ? { ...edge, label: relationship } : edge
-  //       )
-  //     );
-  //     setSelectedEdge((prev) => ({ ...prev, label: relationship }));
-  //   }
-  // };
+  const updateEdgeRelationship = (relationship) => {
+    if (selectedEdge) {
+      setEdges((prevEdges) =>
+        prevEdges.map((edge) =>
+          edge.id === selectedEdge.id ? { ...edge, label: relationship } : edge
+        )
+      );
+      setSelectedEdge((prev) => ({ ...prev, label: relationship }));
+    }
+  };
   const addTable = () => {
     const newNode = {
       id: `table-${Date.now()}`,
@@ -52,8 +51,8 @@ export default function Sidebar({
   };
 
   const deleteTable = (id: string) => {
-    // setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
-    // if (selectedNode?.id === id) setSelectedNode(null);
+    setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
+    if (selectedNode?.id === id) setSelectedNode(null);
   };
 
   const addColumn = () => {
@@ -74,31 +73,49 @@ export default function Sidebar({
       setNewColumn({ name: "", type: "VARCHAR" });
     }
   };
-
   const deleteColumn = (columnName: string) => {
     if (selectedNode) {
-      // setNodes((prevNodes) =>
-      //   prevNodes.map((node) =>
-      //     node.id === selectedNode.id
-      //       ? {
-      //           ...node,
-      //           data: {
-      //             ...node.data,
-      //             columns: node.data.columns.filter(
-      //               (col) => col.name !== columnName
-      //             ),
-      //           },
-      //         }
-      //       : node
-      //   )
-      // );
+      setNodes((prevNodes) =>
+        prevNodes.map((node) =>
+          node.id === selectedNode.id
+            ? {
+                ...node,
+                data: {
+                  ...node.data,
+                  columns: node.data.columns.filter(
+                    (col) => col.name !== columnName
+                  ),
+                },
+              }
+            : node
+        )
+      );
     }
   };
-  const onDragStart = (event, nodeType) => {
+  const updateColumn = (columnName: string, field: string, value: any) => {
+    if (selectedNode) {
+      setNodes((prevNodes) =>
+        prevNodes.map((node) =>
+          node.id === selectedNode.id
+            ? {
+                ...node,
+                data: {
+                  ...node.data,
+                  columns: node.data.columns.map((col) =>
+                    col.name === columnName ? { ...col, [field]: value } : col
+                  ),
+                },
+              }
+            : node
+        )
+      );
+    }
+  };
+  const onDragStart = (event: any, nodeType: string) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
     event.dataTransfer.effectAllowed = "move";
   };
-  const renderShape = (nodeType) => {
+  const renderShape = (nodeType: string) => {
     switch (nodeType) {
       case NodeType.RECTANGLE:
         return <div className="w-16 h-10 bg-blue-400"></div>;
@@ -121,13 +138,12 @@ export default function Sidebar({
     }
   };
   return (
-    <div className="w-60 bg-gray-200 p-4 shadow-md">
+    <div className="w-[500px] bg-gray-200 p-4 shadow-md ">
       <Link to="/landingpage" className="block text-blue-500 mb-4">
         Go to Landing Page
       </Link>
       <h3 className="text-lg font-bold mb-4">Diagram Sidebar</h3>
 
-      {/* Add Table */}
       <button
         onClick={addTable}
         className="w-full bg-blue-500 text-white p-2 rounded-md mb-4"
@@ -135,7 +151,6 @@ export default function Sidebar({
         Add Table
       </button>
 
-      {/* Manage Selected Table */}
       {selectedNode ? (
         <div>
           <h4 className="text-md font-semibold mb-2">
@@ -144,14 +159,14 @@ export default function Sidebar({
           <input
             type="text"
             placeholder="Column Name"
-            value={newColumn.name}
+            value={newColumn.name || ""}
             onChange={(e) =>
               setNewColumn((prev) => ({ ...prev, name: e.target.value }))
             }
             className="w-full p-2 border rounded mb-2"
           />
           <select
-            value={newColumn.type}
+            value={newColumn.type || "VARCHAR"}
             onChange={(e) =>
               setNewColumn((prev) => ({ ...prev, type: e.target.value }))
             }
@@ -161,6 +176,19 @@ export default function Sidebar({
             <option value="VARCHAR">VARCHAR</option>
             <option value="BOOLEAN">BOOLEAN</option>
           </select>
+          <label className="block mb-2">
+            <input
+              type="checkbox"
+              checked={newColumn.isPrimary}
+              onChange={(e) =>
+                setNewColumn((prev) => ({
+                  ...prev,
+                  isPrimary: e.target.checked,
+                }))
+              }
+            />
+            Primary Key
+          </label>
           <button
             onClick={addColumn}
             className="w-full bg-green-500 text-white p-2 rounded mb-4"
@@ -174,9 +202,35 @@ export default function Sidebar({
                 key={col.name}
                 className="flex justify-between items-center bg-white p-2 rounded mb-1 shadow-sm"
               >
-                <span>
-                  {col.name} ({col.type})
-                </span>
+                <input
+                  type="text"
+                  value={col.name}
+                  onChange={(e) =>
+                    updateColumn(col.name, "name", e.target.value)
+                  }
+                  className="border rounded px-2 py-1 w-[180px]"
+                />
+                <select
+                  value={col.type}
+                  onChange={(e) =>
+                    updateColumn(col.name, "type", e.target.value)
+                  }
+                  className="border rounded px-2 py-1"
+                >
+                  <option value="INT">INT</option>
+                  <option value="VARCHAR">VARCHAR</option>
+                  <option value="BOOLEAN">BOOLEAN</option>
+                </select>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={col.isPrimary}
+                    onChange={() =>
+                      updateColumn(col.name, "isPrimary", !col.isPrimary)
+                    }
+                  />
+                  PK
+                </label>
                 <button
                   onClick={() => deleteColumn(col.name)}
                   className="bg-red-500 text-white p-1 rounded"
@@ -188,10 +242,9 @@ export default function Sidebar({
           </ul>
         </div>
       ) : (
-        <p className="text-gray-500 text-sm">Select a table to edit.</p>
+        <p className="text-gray-500 text-sm">Select a table to insert data.</p>
       )}
 
-      {/* Table List */}
       <h4 className="text-md font-semibold mt-4">All Tables</h4>
       <ul>
         {nodes.map((node) => (
@@ -213,6 +266,25 @@ export default function Sidebar({
           </li>
         ))}
       </ul>
+      <div>
+        <h4 className="text-md font-semibold mt-4">Edit Edge</h4>
+        {selectedEdge ? (
+          <div className="mb-4">
+            <label className="block mb-2">Relationship Type:</label>
+            <select
+              value={selectedEdge.label || "1:1"}
+              onChange={(e) => updateEdgeRelationship(e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="1:1">1:1</option>
+              <option value="1:M">1:M</option>
+              <option value="M:N">M:N</option>
+            </select>
+          </div>
+        ) : (
+          <p className="text-gray-500 text-sm">Select an edge to edit.</p>
+        )}
+      </div>
       <h4 className="text-md font-semibold mt-4">Shapes</h4>
       <div className="grid grid-cols-3 gap-2">
         {NODES.map((nodeType) => (
